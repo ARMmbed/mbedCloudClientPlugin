@@ -21,6 +21,11 @@
 // pulled from https://github.com/ARMmbed/mbed-cloud-sample
 // ************************************************************************
 
+// Choose a LED color (for FOTA illustration) - only ONE may be uncommented or compile errors occur!
+//#define USE_BLUE_LED			true
+//#define USE_RED_LED			true
+#define USE_GREEN_LED			true
+
 // Enable/Disable the DeviceManager
 #define ENABLE_DEVICE_MANAGER       true    
 
@@ -49,15 +54,11 @@ PassphraseAuthenticator authenticator(&logger,MY_DM_PASSPHRASE);
 
 // Monotonic Counter Resource
 #include "mbed-endpoint-resources/MonotonicCounterResource.h"
-MonotonicCounterResource sample_counter_res(&logger,"123","4567",true);     // "true" -> resource is observable
-
-// Accelerometer Resource
-#include "mbed-endpoint-resources/AccelerometerResource.h"
-AccelerometerResource accelerometer_res(&logger,"111","1111",true);         // "true" -> resource is observable
+MonotonicCounterResource sample_counter(&logger,"123","4567",true);     // "true" -> resource is observable
 
 // Light Sensor Resource
 #include "mbed-endpoint-resources/LightResource.h"
-LightResource light_res(&logger,"222","2222");                              // not observable
+LightResource light(&logger,"311","5850");                            
 
 // forward references
 extern "C" void mcc_platform_init_connection(void);
@@ -72,14 +73,11 @@ Connector::Options *configure_endpoint(Connector::OptionsBuilder &config)
         // set the endpoint type (from mbed_cloud_client_user_config.h) 
         .setEndpointType(MBED_CLOUD_CLIENT_ENDPOINT_TYPE)
         
-        // Accelerometer Resource
-        .addResource(&accelerometer_res,5000)       // observe every 5 seconds
-        
         // Light Resource
-        .addResource(&light_res)                    // not observable
+        .addResource(&light)                    // not observable
         
         // Monotonic Counter Resource
-        .addResource(&sample_counter_res,10000)     // observe every 10 seconds
+        .addResource(&sample_counter,10000)     // observe every 10 seconds
                    
         // finalize the configuration...
         .build();

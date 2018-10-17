@@ -27,7 +27,15 @@
 #include "mbed-connector-interface/DynamicResource.h"
 
 // our Light sensor
-extern DigitalOut led1;
+#ifdef USE_BLUE_LED
+DigitalOut  __light(LED3);
+#endif
+#ifdef USE_RED_LED
+DigitalOut  __light(LED1);
+#endif
+#ifdef USE_GREEN_LED
+DigitalOut  __light(LED2);
+#endif
 
 // possible Light states
 #define OFF             "1"
@@ -55,7 +63,7 @@ public:
     */
     virtual string get() {
         string result(OFF);
-        if (led1) result = ON;
+        if (__light) result = ON;
         return result;
     }
 
@@ -64,8 +72,8 @@ public:
     @param string input the string containing "0" (light off) or "1" (light on)
     */
     virtual void put(const string value) {
-        if (value.find(string(OFF)) != string::npos) led1 = 0;
-        else led1 = 1;
+        if (value.find(string(OFF)) != string::npos) __light = 0;
+        else __light = 1;
     }
 };
 

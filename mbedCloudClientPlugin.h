@@ -22,15 +22,15 @@
 // ************************************************************************
 
 // Choose a LED color (for FOTA illustration) - only ONE may be uncommented or compile errors occur!
-//#define USE_BLUE_LED			true
+#define USE_BLUE_LED			true
 //#define USE_RED_LED			true
-#define USE_GREEN_LED			true
+//#define USE_GREEN_LED			true
 
 // Enable/Disable the DeviceManager
-#define ENABLE_DEVICE_MANAGER       true    
+#define ENABLE_DEVICE_MANAGER           true    
 
 // Passphrase to supply for data management authentication
-#define MY_DM_PASSPHRASE            "arm1234"
+#define MY_DM_PASSPHRASE                "arm1234"
 
 // Include security.h
 #include "security.h"
@@ -60,6 +60,10 @@ MonotonicCounterResource sample_counter(&logger,"123","4567",true);     // "true
 #include "mbed-endpoint-resources/LightResource.h"
 LightResource light(&logger,"311","5850");                            
 
+// Application Stack Control Resource
+#include "mbed-endpoint-resources/ApplicationStackControlResource.h"
+ApplicationStackControlResource app_control(&logger,"311","5600");
+
 // forward references
 extern "C" void mcc_platform_init_connection(void);
 extern "C" void *mcc_platform_get_network_interface(void);
@@ -78,6 +82,9 @@ Connector::Options *configure_endpoint(Connector::OptionsBuilder &config)
         
         // Monotonic Counter Resource
         .addResource(&sample_counter,10000)     // observe every 10 seconds
+
+        // Application Stack Control Example Resource
+	.addResource(&app_control)		// not observable
                    
         // finalize the configuration...
         .build();
